@@ -1,0 +1,23 @@
+[
+  {
+    "id": "d5f3e64d-1a69-48fd-bf0a-9ccfe237466a",
+    "title": "1",
+    "content": "2",
+    "date": "2024-04-06T06:56:53.644Z",
+    "image": null
+  },
+  {
+    "id": "de943baa-947a-4247-84cf-b47e1492c515",
+    "title": "5",
+    "content": "5",
+    "date": "2024-04-06T06:58:55.732Z",
+    "image": "images/10d56f9a-5111-422c-956e-a664c5e221b8.jpeg"
+  },
+  {
+    "id": "08cf9978-e671-49de-a96f-c421e259024f",
+    "title": "New title from front",
+    "content": "New content from front",
+    "date": "2024-04-06T10:17:29.904Z",
+    "image": "images/63f9b306-07ef-4052-a179-75c12c7e4263.jpeg"
+  }
+]

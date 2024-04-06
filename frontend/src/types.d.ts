@@ -9,3 +9,13 @@ export interface NewsWithId extends News {
   image: string,
   date: string,
 }
+
+export interface Comment {
+  author: string,
+  text: string,
+  newsId: string | undefined
+}
+
+export interface CommentWithId extends Comment {
+  id: string
+}

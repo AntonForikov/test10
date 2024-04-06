@@ -1,6 +1,6 @@
 import {createAsyncThunk} from '@reduxjs/toolkit';
 import axiosApi from '../axiosApi';
-import {News, NewsWithId} from '../types';
+import {News, NewsWithId, Comment, CommentWithId} from '../types';
 
 export const sendNews = createAsyncThunk(
   'sendNews/post',
@@ -30,6 +30,49 @@ export const getNews = createAsyncThunk(
         return data.reverse();
       } else {
         return [];
+      }
+    } catch (e) {
+      console.error(e);
+    }
+  }
+);
+
+export const getNewsById = createAsyncThunk(
+  'getNews/getById',
+  async (id: string) => {
+    try {
+      const {data} = await axiosApi.get<NewsWithId | undefined>(`/news/${id}`);
+      if (data) {
+        return data;
+      } else {
+        return null;
+      }
+    } catch (e) {
+      console.error(e);
+    }
+  }
+);
+
+export const sendComment = createAsyncThunk(
+  'sendComment/post',
+  async (comment: Comment) => {
+    try {
+      await axiosApi.post<CommentWithId | undefined>('/comments', comment);
+    } catch (e) {
+      console.error(e);
+    }
+  }
+);
+
+export const getComment = createAsyncThunk(
+  'getComment/get',
+  async (id: string) => {
+    try {
+      const {data} =  await axiosApi.get<CommentWithId | undefined>(`/comments?news_id=${id}`);
+      if (data) {
+        return data
+      } else {
+        return null
       }
     } catch (e) {
       console.error(e);

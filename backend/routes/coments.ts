@@ -8,6 +8,8 @@ const commentRouter = express.Router();
 commentRouter.post('/', async (req, res) => {
   const {text, newsId, author} = req.body;
 
+  console.log(text, newsId)
+
   if (!text || !newsId) {
     return res.status(400).json({error: 'To create new comment "text" and "newsId" fields are required.'});
   }

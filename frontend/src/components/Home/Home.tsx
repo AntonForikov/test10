@@ -25,6 +25,7 @@ const Home = () => {
                 return (
                     <NewsItem
                         key={news.id}
+                        id={news.id}
                         date={news.date}
                         title={news.title}
                         image={news.image}
