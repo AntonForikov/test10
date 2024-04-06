@@ -52,6 +52,7 @@ const newsSlice = createSlice({
       state.loading = true;
     }).addCase(getComment.fulfilled, (state, {payload: comments}) => {
       state.loading = false;
+      state.commentList = [];
       if (comments) state.commentList = comments;
     }).addCase(getComment.rejected, (state) => {
       state.loading = false;

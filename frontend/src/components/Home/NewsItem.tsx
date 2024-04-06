@@ -3,6 +3,8 @@ import no_image_available from '../../../assets/no_image_available.png'
 import React from 'react';
 import {apiUrl} from '../../constants';
 import {Link} from 'react-router-dom';
+import {useAppDispatch} from '../../app/hooks';
+import {deleteNews, getNews} from '../../store/newsThunk';
 
 interface Props {
   id: string,
@@ -12,10 +14,16 @@ interface Props {
 }
 
 const NewsItem: React.FC<Props> = ({id,title, date, image}) => {
+  const dispatch = useAppDispatch();
   let cardImage = no_image_available;
 
   if (image) {
     cardImage = `${apiUrl}/${image}`;
+  }
+
+  const onDelete = async () => {
+    await dispatch(deleteNews(id));
+    await dispatch(getNews());
   }
   return (
     <Paper elevation={5} sx={{padding: 3, marginY: 2}}>
@@ -32,7 +40,7 @@ const NewsItem: React.FC<Props> = ({id,title, date, image}) => {
             </Box>
           </Box>
         </Box>
-        <Button variant='contained' color='error'>Delete</Button>
+        <Button variant='contained' color='error' onClick={onDelete}>Delete</Button>
       </Box>
     </Paper>
   );

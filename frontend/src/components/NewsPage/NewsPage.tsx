@@ -39,14 +39,16 @@ const NewsPage = () => {
     }));
   };
 
-  const onFormSubmit = (e: React.FormEvent) => {
+  const onFormSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (comment.author[0] === ' ' || comment.text[0] === ' ') {
       alert("Your name and comment can't begin from empty string.");
     } else if (comment.text === ''){
       alert("You can't send empty comment");
     } else {
-      dispatch(sendComment(comment));
+      await dispatch(sendComment(comment))
+      setComment(initialComment);
+      if (id) await dispatch(getComment(id));
     }
   };
 
@@ -60,6 +62,7 @@ const NewsPage = () => {
         return<CommentItem
           key={com.id}
           id={com.id}
+          newsId={id ? id : null}
           text={com.text}
           author={com.author}
         />
