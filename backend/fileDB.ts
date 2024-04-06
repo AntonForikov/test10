@@ -1,157 +1,92 @@
 import {promises as fs} from 'fs';
-import {CategoryLocation, CategoryLocationWithoutId, Item, ItemWithOutId} from './types';
+import {Comment, CommentWithoutId, News, NewsWithOutId} from './types';
 
-const itemFilename = './items.json';
-const categoryFilename = './categories.json';
-const locationFilename = './locations.json';
+const newsFilename = './news.json';
+const commentsFilename = './comments.json';
 
-let itemList: Item[] = [];
-let categoryList: CategoryLocation[] = [];
-let locationList: CategoryLocation[] = [];
+let newsList: News[] = [];
+let commentList: Comment[] = [];
 
 const fileDB = {
-  async initItems (){
+  async initNews (){
     try {
-      const fileContents = await fs.readFile(itemFilename);
-      itemList = JSON.parse(fileContents.toString());
+      const fileContents = await fs.readFile(newsFilename);
+      newsList = JSON.parse(fileContents.toString());
     } catch  {
-      itemList = [];
+      newsList = [];
     }
   },
 
-  async getItems () {
-    return itemList;
+  async getNews () {
+    return newsList;
   },
 
-  async getItemById (id: string) {
-    return itemList.find(item => item.id === id);
+  async getNewsById (id: string) {
+    return newsList.find(news => news.id === id);
   },
 
-  async addItem (itemToAdd: ItemWithOutId) {
-    const item: Item = {
+  async addNews (itemToAdd: NewsWithOutId) {
+    const news: News = {
       id: crypto.randomUUID(),
       ...itemToAdd,
     };
 
-    itemList.push({...item});
-    await this.saveItem();
+    newsList.push({...news});
+    await this.saveNews();
 
-    return item;
+    return news;
   },
 
-  async saveItem () {
-    await fs.writeFile(itemFilename, JSON.stringify(itemList, null, 2));
+  async saveNews () {
+    await fs.writeFile(newsFilename, JSON.stringify(newsList, null, 2));
   },
 
-  async deleteItem (id: string) {
-    const items = await this.getItems();
-    itemList = items.filter((item) => item.id !== id);
-    await this.saveItem();
+  async deleteNews (id: string) {
+    const news = await this.getNews();
+    const comments = await this.getComments();
+    commentList = comments.filter((comment) => comment.newsId !== id);
+    newsList = news.filter((news) => news.id !== id);
+    await this.saveComment();
+    await this.saveNews();
   },
 
-  async updateItem (id: string, newItem: Item) {
-    const items = await this.getItems();
-    itemList = items.map((item) => {
-      if (item.id === id) return {...newItem};
-      return item;
-    });
-    await this.saveItem();
-  },
-
-  async initCategories (){
+  async initComments (){
     try {
-      const fileContents = await fs.readFile(categoryFilename);
-      categoryList = JSON.parse(fileContents.toString());
+      const fileContents = await fs.readFile(commentsFilename);
+      commentList = JSON.parse(fileContents.toString());
     } catch  {
-      categoryList = [];
+      commentList = [];
     }
   },
 
-  async getCategories () {
-    return categoryList;
+  async getComments () {
+    return commentList;
   },
 
-  async getCategoryById (id: string) {
-    return categoryList.find(category => category.id === id);
-  },
+  // async getCategoryById (id: string) {
+  //   return commentList.find(category => category.id === id);
+  // },
 
-  async addCategory (categoryToAdd: CategoryLocationWithoutId) {
-    const category: CategoryLocation = {
+  async addComment (commentToAdd: CommentWithoutId) {
+    const comment: Comment = {
       id: crypto.randomUUID(),
-      ...categoryToAdd,
+      ...commentToAdd,
     };
 
-    categoryList.push({...category});
-    await this.saveCategory();
+    commentList.push({...comment});
+    await this.saveComment();
 
-    return category;
+    return comment;
   },
 
-  async saveCategory () {
-    await fs.writeFile(categoryFilename, JSON.stringify(categoryList, null, 2));
+  async saveComment () {
+    await fs.writeFile(commentsFilename, JSON.stringify(commentList, null, 2));
   },
 
-  async deleteCategory (id: string) {
-    const categories = await this.getCategories();
-    categoryList = categories.filter((category) => category.id !== id);
-    await this.saveCategory();
-  },
-
-  async updateCategory (id: string, newCategory: CategoryLocation) {
-    const categories = await this.getCategories();
-    categoryList = categories.map((category) => {
-      if (category.id === id) return {...newCategory};
-      return category;
-    });
-    await this.saveCategory();
-  },
-
-  async initLocations (){
-    try {
-      const fileContents = await fs.readFile(locationFilename);
-      locationList = JSON.parse(fileContents.toString());
-    } catch  {
-      locationList = [];
-    }
-  },
-
-  async getLocations () {
-    return locationList;
-  },
-
-  async getLocationById (id: string) {
-    return locationList.find(category => category.id === id);
-  },
-
-  async addLocation (locationToAdd: CategoryLocationWithoutId) {
-    const location: CategoryLocation = {
-      id: crypto.randomUUID(),
-      ...locationToAdd,
-    };
-
-    locationList.push({...location});
-    await this.saveLocation();
-
-    return location;
-  },
-
-  async saveLocation () {
-    await fs.writeFile(locationFilename, JSON.stringify(locationList, null, 2));
-  },
-
-  async deleteLocation (id: string) {
-    const locations = await this.getLocations();
-    locationList = locations.filter((location) => location.id !== id);
-    await this.saveLocation();
-  },
-
-  async updateLocation (id: string, newLocation: CategoryLocation) {
-    const locations = await this.getLocations();
-    locationList = locations.map((location) => {
-      if (location.id === id) return {...newLocation};
-      return location;
-    });
-    await this.saveLocation();
+  async deleteComment (id: string) {
+    const comments = await this.getComments();
+    commentList = comments.filter((comment) => comment.id !== id);
+    await this.saveComment();
   },
 };
 
