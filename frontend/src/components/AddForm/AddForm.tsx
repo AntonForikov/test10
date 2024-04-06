@@ -1,23 +1,25 @@
 import {Button, Grid, TextField} from '@mui/material';
 import SendIcon from '@mui/icons-material/Send';
 import React, {useRef, useState} from 'react';
-import {Message} from '../../types';
+import {News} from '../../types';
 import {useAppDispatch, useAppSelector} from '../../app/hooks';
-import {selectLoading} from '../../store/messageSlice';
+import {selectLoading} from '../../store/newsSlice';
 import FileInput from './FileInput';
-import {getMessages, sendMessage} from '../../store/messageThunk';
+import {getNews, sendNews} from '../../store/newsThunk';
+import {useNavigate} from 'react-router-dom';
 
-const initialMessage: Message = {
-  author: '',
-  message: '',
+const initialMessage: News = {
+  title: '',
+  content: '',
   image: null
 };
 const AddForm = () => {
   const loading = useAppSelector(selectLoading);
   const dispatch = useAppDispatch();
-  const [message, setMessage] = useState<Message>(initialMessage);
+  const [news, setNews] = useState<News>(initialMessage);
   const [fileName, setFileName] = useState('');
   const resetButtonRef = useRef<HTMLInputElement>(null);
+  const navigate = useNavigate();
 
   const resetFileInput = () => {
     if (resetButtonRef.current) {
@@ -25,9 +27,9 @@ const AddForm = () => {
     }
   };
 
-  const changeMessageHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const changeNewsHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
     const {name, value} = e.target;
-    setMessage((prevState) => ({
+    setNews((prevState) => ({
       ...prevState,
       [name]: value
     }));
@@ -37,7 +39,7 @@ const AddForm = () => {
     const {name, files} = e.target;
 
     if (files) {
-      setMessage(prevState => ({
+      setNews(prevState => ({
         ...prevState,
         [name]: files[0]
       }))
@@ -51,18 +53,19 @@ const AddForm = () => {
 
   const onFormSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (message.message[0] === ' ' || message.message === '') {
-      alert("You can't send message started from whitespace or it can't be empty!");
+    if (news.title[0] === ' ' || news.title === '') {
+      alert("You can't send news started from whitespace or it can't be empty!");
     } else {
       try {
-        await dispatch(sendMessage(message));
-        await dispatch(getMessages());
+        await dispatch(sendNews(news));
+        await dispatch(getNews());
+        navigate('/');
       } catch (e) {
         console.error(e);
         alert('Please check URL or run backend server.');
       } finally {
         resetFileInput();
-        setMessage(initialMessage);
+        setNews(initialMessage);
         setFileName('');
       }
     }
@@ -70,25 +73,25 @@ const AddForm = () => {
 
   return (
     <form onSubmit={onFormSubmit}>
-      <Grid container direction="column" spacing={2} marginBottom={2}>
+      <Grid container direction="column" spacing={2} marginBottom={2} maxWidth={600} margin='auto'>
         <Grid item xs>
           <TextField
             fullWidth
             variant="outlined"
-            label="Author"
-            name="author"
-            value={message.author}
-            onChange={changeMessageHandler}
+            label="Title"
+            name="title"
+            value={news.title}
+            onChange={changeNewsHandler}
           />
         </Grid>
         <Grid item xs>
           <TextField
             fullWidth
             variant="outlined"
-            label="Message"
-            name="message"
-            value={message.message}
-            onChange={changeMessageHandler}
+            label="Content"
+            name="content"
+            value={news.content}
+            onChange={changeNewsHandler}
           />
         </Grid>
         <Grid item xs>

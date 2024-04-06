@@ -2,17 +2,17 @@ import {useEffect} from 'react';
 import {Alert, CircularProgress, Grid} from '@mui/material';
 import MessageItem from './MessageItem';
 import {useAppDispatch, useAppSelector} from '../../app/hooks';
-import {selectLoading, selectMessageList} from '../../store/messageSlice';
-import {getMessages} from '../../store/messageThunk';
+import {selectLoading, selectNewsList} from '../../store/newsSlice';
+import {getNews} from '../../store/newsThunk';
 
 const MessageList = () => {
-  const messageList = useAppSelector(selectMessageList);
+  const messageList = useAppSelector(selectNewsList);
   const loading = useAppSelector(selectLoading);
   const dispatch = useAppDispatch();
 
 
   useEffect(() => {
-    dispatch(getMessages());
+    dispatch(getNews());
   }, [dispatch]);
 
   return (

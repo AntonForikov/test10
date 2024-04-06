@@ -1,10 +1,11 @@
-export interface Message {
-  author: string,
-  message: string,
+export interface News {
+  title: string,
+  content: string,
   image: File | null
 }
 
-export interface MessageWithIdAndImage extends Message {
+export interface NewsWithId extends News {
   id: string,
-  image: string | null
+  image: string,
+  date: string,
 }
