@@ -63,9 +63,9 @@ const fileDB = {
     return commentList;
   },
 
-  // async getCategoryById (id: string) {
-  //   return commentList.find(category => category.id === id);
-  // },
+  async getCommentById (id: string) {
+    return commentList.find(comment => comment.id === id);
+  },
 
   async addComment (commentToAdd: CommentWithoutId) {
     const comment: Comment = {

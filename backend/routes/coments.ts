@@ -42,7 +42,6 @@ commentRouter.get('/', async (req, res) => {
     const commentsWithQuery = commentList.filter((comment) => comment.newsId === news_id);
     if (commentsWithQuery.length > 0) return res.json(commentsWithQuery);
     if (commentsWithQuery.length === 0) return res.status(400).json({error: 'There are no comments with this news_id'});
-    console.log(commentsWithQuery)
   }
 
   return res.json(commentList);
@@ -51,12 +50,9 @@ commentRouter.get('/', async (req, res) => {
 
 commentRouter.delete('/:id', async (req, res) => {
   const {id} = req.params;
-  // const target = await fileDB.getCategoryById(id);
-  // const items = await fileDB.getItems();
-  // const relationExist = items.filter((item) => target?.id === item.categoryId);
-  //
-  // if (!target) res.status(400).json({error: 'There is no such category.'});
-  // if (relationExist.length > 0) return res.status(403).json({error: 'This category has a relation.'});
+  const target = await fileDB.getCommentById(id);
+
+  if (!target) res.status(400).json({error: 'There is no such comment.'});
 
   await fileDB.deleteComment(id);
   res.json({success: 'Comment remove'});
