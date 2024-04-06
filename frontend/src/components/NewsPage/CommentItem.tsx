@@ -1,7 +1,8 @@
 import React from 'react';
 import {Button, Grid, Paper, Typography} from '@mui/material';
-import {useAppDispatch} from '../../app/hooks';
+import {useAppDispatch, useAppSelector} from '../../app/hooks';
 import {deleteComment, getComment} from '../../store/newsThunk';
+import {selectLoading} from '../../store/newsSlice';
 
 interface Props {
   id: string,
@@ -11,7 +12,7 @@ interface Props {
 }
 const CommentItem: React.FC<Props> = ({id,text,author, newsId}) => {
   const dispatch = useAppDispatch();
-
+  const loading = useAppSelector(selectLoading);
   const onDelete = async () => {
     await dispatch(deleteComment(id));
     if(newsId) await dispatch(getComment(newsId));
@@ -24,7 +25,7 @@ const CommentItem: React.FC<Props> = ({id,text,author, newsId}) => {
           <Typography fontWeight={600}>{author}:</Typography>
           <Typography>{text}</Typography>
         </Grid>
-        <Button variant='contained' color='error' onClick={onDelete}>Delete</Button>
+        <Button variant='contained' color='error' onClick={onDelete} disabled={loading}>Delete</Button>
       </Grid>
     </Paper>
   );

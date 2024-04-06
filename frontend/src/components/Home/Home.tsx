@@ -1,8 +1,8 @@
 import NewsItem from "./NewsItem";
-import {Button, Grid, Typography} from "@mui/material";
+import {Alert, Button, CircularProgress, Grid, Typography} from '@mui/material';
 import {Link} from "react-router-dom";
 import {useAppDispatch, useAppSelector} from "../../app/hooks";
-import {selectNewsList} from "../../store/newsSlice";
+import {selectLoading, selectNewsList} from '../../store/newsSlice';
 import {useEffect} from "react";
 import {getNews} from "../../store/newsThunk";
 
@@ -10,6 +10,7 @@ import {getNews} from "../../store/newsThunk";
 const Home = () => {
     const newsList = useAppSelector(selectNewsList);
     const dispatch = useAppDispatch();
+    const loading = useAppSelector(selectLoading);
 
     useEffect(() => {
         dispatch(getNews());
@@ -21,18 +22,25 @@ const Home = () => {
                 <Typography variant='h4'>Posts</Typography>
                 <Button component={Link} to='add-new-post' variant='outlined'>Add new post</Button>
             </Grid>
-            {newsList.map((news) => {
-                return (
-                    <NewsItem
+            {
+              loading
+                ? <CircularProgress />
+                : !loading && newsList.length < 1
+                  ? <Alert severity="warning">There is no news in base</Alert>
+                  : newsList.map((news) => {
+                    return (
+                      <NewsItem
                         key={news.id}
                         id={news.id}
                         date={news.date}
                         title={news.title}
                         image={news.image}
-                    />
-                )
-            })}
+                      />
+                    )
+                  })
+            }
         </>
+
     );
 };
 

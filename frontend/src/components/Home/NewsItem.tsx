@@ -3,8 +3,9 @@ import no_image_available from '../../../assets/no_image_available.png'
 import React from 'react';
 import {apiUrl} from '../../constants';
 import {Link} from 'react-router-dom';
-import {useAppDispatch} from '../../app/hooks';
+import {useAppDispatch, useAppSelector} from '../../app/hooks';
 import {deleteNews, getNews} from '../../store/newsThunk';
+import {selectLoading} from '../../store/newsSlice';
 
 interface Props {
   id: string,
@@ -15,6 +16,7 @@ interface Props {
 
 const NewsItem: React.FC<Props> = ({id,title, date, image}) => {
   const dispatch = useAppDispatch();
+  const loading = useAppSelector(selectLoading);
   let cardImage = no_image_available;
 
   if (image) {
@@ -40,7 +42,7 @@ const NewsItem: React.FC<Props> = ({id,title, date, image}) => {
             </Box>
           </Box>
         </Box>
-        <Button variant='contained' color='error' onClick={onDelete}>Delete</Button>
+        <Button variant='contained' color='error' onClick={onDelete} disabled={loading}>Delete</Button>
       </Box>
     </Paper>
   );

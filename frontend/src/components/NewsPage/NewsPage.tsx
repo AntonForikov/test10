@@ -1,9 +1,9 @@
 import {useParams} from 'react-router-dom';
 import {useAppDispatch, useAppSelector} from '../../app/hooks';
-import {selectComments, selectNewsById} from '../../store/newsSlice';
+import {selectComments, selectLoading, selectNewsById} from '../../store/newsSlice';
 import React, {useEffect, useState} from 'react';
 import {getComment, getNewsById, sendComment} from '../../store/newsThunk';
-import {Button, Grid, TextField, Typography} from '@mui/material';
+import {Alert, Button, CircularProgress, Grid, TextField, Typography} from '@mui/material';
 import SendIcon from '@mui/icons-material/Send';
 import {Comment} from '../../types';
 import CommentItem from './CommentItem';
@@ -11,6 +11,7 @@ const NewsPage = () => {
   const dispatch = useAppDispatch();
   const selectNews = useAppSelector(selectNewsById);
   const selectComment = useAppSelector(selectComments);
+  const loading = useAppSelector(selectLoading);
   const {id} = useParams();
 
   const initialComment: Comment = {
@@ -52,21 +53,37 @@ const NewsPage = () => {
     }
   };
 
+  selectComment.map((com) => {
+    return<CommentItem
+      key={com.id}
+      id={com.id}
+      newsId={id ? id : null}
+      text={com.text}
+      author={com.author}
+    />
+  })
+
   return (
     <Grid container direction='column'>
       <Typography variant='h4'>{selectNews?.title}</Typography>
       <Typography color='gray'>{selectNews?.date}</Typography>
       <Typography>{selectNews?.content}</Typography>
       <Typography variant='h4' marginTop={4}>Comments</Typography>
-      {selectComment.map((com) => {
-        return<CommentItem
-          key={com.id}
-          id={com.id}
-          newsId={id ? id : null}
-          text={com.text}
-          author={com.author}
-        />
-      })}
+      {
+        loading
+          ? <CircularProgress />
+          : !loading && selectComment.length < 1
+            ? <Alert severity="warning">This is no comments.</Alert>
+            : selectComment.map((com) => {
+              return<CommentItem
+                key={com.id}
+                id={com.id}
+                newsId={id ? id : null}
+                text={com.text}
+                author={com.author}
+              />
+            })
+      }
       <Typography variant='h4' marginTop={4}>Add comment</Typography>
       <form onSubmit={onFormSubmit}>
         <Grid item xs>
@@ -90,7 +107,7 @@ const NewsPage = () => {
           />
         </Grid>
         <Grid item xs>
-          <Button type="submit" variant="contained" endIcon={<SendIcon/>}>
+          <Button type="submit" variant="contained" endIcon={<SendIcon/>} disabled={loading}>
             Send
           </Button>
         </Grid>
